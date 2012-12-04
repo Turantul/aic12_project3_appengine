@@ -1,0 +1,33 @@
+#=================
+#eclipse-workspace
+#=================
+eclipse-workspace
+
+#=================
+#eclipse-project
+#=================
+*bin
+*.checkstyle
+*.class
+*classes/
+
+#================
+#Mac OS X hidden files/folders
+#================
+.DS_Store
+
+#================
+#WinXP hidden files/folders
+#================
+*Thumbs.db
+
+#================
+#Assembly artifacts
+#================
+*.zip
+
+#================
+#Logs and other debug stuff
+#================
+*.log
+*log/
