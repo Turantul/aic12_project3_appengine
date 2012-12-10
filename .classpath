@@ -12,5 +12,12 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="con" path="com.google.appengine.eclipse.core.GAE_CONTAINER/v2"/>
+	<classpathentry kind="lib" path="F:/Uni/AIC_GAE/aic12_project3_appengine/war/WEB-INF/lib/junit-4.10.jar"/>
+	<classpathentry kind="lib" path="F:/Uni/AIC_GAE/aic12_project3_appengine/war/WEB-INF/lib/objectify-4.0b1.jar"/>
+	<classpathentry kind="lib" path="F:/Uni/AIC_GAE/aic12_project3_appengine/war/WEB-INF/lib/appengine-api.jar"/>
+	<classpathentry kind="lib" path="F:/Uni/AIC_GAE/aic12_project3_appengine/war/WEB-INF/lib/appengine-api-labs.jar"/>
+	<classpathentry kind="lib" path="F:/Uni/AIC_GAE/aic12_project3_appengine/war/WEB-INF/lib/appengine-api-stubs.jar"/>
+	<classpathentry kind="lib" path="F:/Uni/AIC_GAE/aic12_project3_appengine/war/WEB-INF/lib/appengine-testing.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
