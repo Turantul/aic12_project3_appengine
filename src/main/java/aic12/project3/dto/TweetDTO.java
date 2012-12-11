@@ -4,13 +4,23 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.googlecode.objectify.annotation.Embed;
+import com.googlecode.objectify.annotation.Entity;
+import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Index;
+import com.googlecode.objectify.annotation.Unindex;
 
+@Entity
 public class TweetDTO
 {
+	@Id
     private String twitterId;
     private String text;
+    @Index
     private Date date;
     private Integer sentiment;
+    @Embed
+    @Index
     private List<String> companies = new ArrayList<String>();
     
     public TweetDTO() {}
