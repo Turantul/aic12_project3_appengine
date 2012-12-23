@@ -18,8 +18,6 @@ public class TweetDTO
     private String text;
     @Index
     private Date date;
-    private Integer sentiment;
-    @Embed
     @Index
     private List<String> companies = new ArrayList<String>();
     
@@ -60,16 +58,6 @@ public class TweetDTO
     public void setDate(Date date)
     {
         this.date = date;
-    }
-
-    public Integer getSentiment()
-    {
-        return sentiment;
-    }
-
-    public void setSentiment(Integer sentiment)
-    {
-        this.sentiment = sentiment;
     }
 	
 	public List<String> getCompanies() {

@@ -1,5 +1,6 @@
 package aic12.project3.dao;
 
+import aic12.project3.dto.TweetDTO;
 import aic12.project3.dto.UserDTO;
 
 import com.googlecode.objectify.Objectify;
@@ -10,6 +11,7 @@ public class OfyService {
 
 	static{
 		factory().register(UserDTO.class);
+		factory().register(TweetDTO.class);
 	}
 	
 	public static Objectify ofy(){
