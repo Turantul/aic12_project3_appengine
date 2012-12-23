@@ -34,12 +34,21 @@
     <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
     <load-on-startup>1</load-on-startup>
   </servlet>
-
   <servlet-mapping>
     <servlet-name>Faces Servlet</servlet-name>
     <url-pattern>/faces/*</url-pattern>
     <url-pattern>*.jsf</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>Index Servlet</servlet-name>
+    <servlet-class>aic12.project3.webserver.servlet.IndexServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Index Servlet</servlet-name>
+    <url-pattern>/tasks/index</url-pattern>
+  </servlet-mapping>
+  
 
   <!-- ***** Specify session timeout of thirty (30) minutes. ***** -->
   <session-config>
