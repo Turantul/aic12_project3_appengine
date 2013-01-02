@@ -14,7 +14,9 @@ import twitter4j.QueryResult;
 import twitter4j.Tweet;
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
-import aic12.project3.analysis.service.SentimentRequest;
+import aic12.project3.dao.GoogleRequestDAO;
+import aic12.project3.dto.SentimentProcessingRequest;
+import aic12.project3.dto.SentimentRequest;
 import classifier.ClassifierBuilder;
 import classifier.IClassifier;
 import classifier.WeightedMajority;
@@ -22,7 +24,7 @@ import classifier.WekaClassifier;
 
 public class AnalysisServlet extends HttpServlet
 {
-    private static WeightedMajority wm;
+    private WeightedMajority wm;
 
     public AnalysisServlet() throws Exception
     {
@@ -43,17 +45,19 @@ public class AnalysisServlet extends HttpServlet
 
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
-        List<Tweet> tweets = new ArrayList<Tweet>(1000);
+        SentimentRequest request = GoogleRequestDAO.instance.getRequest(req.getParameter("request"));
 
         // TODO: query database for tweets
         // so far Twitter4J is used
         try
         {
+            List<Tweet> tweets = new ArrayList<Tweet>(1000);
+            
             Twitter twitter = new TwitterFactory().getInstance();
 
-            Query query = new Query(req.getParameter("company"));
+            Query query = new Query(request.getCompanyName());
             query.setLang("en");
-            query.setRpp(100);
+            query.setRpp(10);
 
             for (int i = 1; i < 10; i++)
             {
@@ -62,16 +66,21 @@ public class AnalysisServlet extends HttpServlet
                 tweets.addAll(result.getTweets());
             }
 
-            SentimentRequest request = new SentimentRequest();
             calculateSentiment(request, tweets);
+            
+            resp.setStatus(200);
         }
         catch (Exception e)
-        {}
+        {
+            throw new IOException(e);
+        }
     }
 
     private void calculateSentiment(SentimentRequest request, List<Tweet> list) throws Exception
     {
-        request.setTimestampDataFetched(System.currentTimeMillis());
+        SentimentProcessingRequest proreq = new SentimentProcessingRequest();
+        
+        proreq.setTimestampDataFetched(System.currentTimeMillis());
 
         int i = 0;
         for (Tweet tweet : list)
@@ -79,11 +88,12 @@ public class AnalysisServlet extends HttpServlet
             i += wm.weightedClassify(tweet.getText()).getPolarity();
         }
 
-        request.setSentiment((float) i / list.size() / 4);
-        request.setNumberOfTweets(list.size());
+        proreq.setSentiment((float) i / list.size() / 4);
+        proreq.setNumberOfTweets(list.size());
 
-        request.setTimestampAnalyzed(System.currentTimeMillis());
+        proreq.setTimestampAnalyzed(System.currentTimeMillis());
         
-        // TODO: store into DB
+        request.getSubRequests().add(proreq);
+        GoogleRequestDAO.instance.saveRequest(request);
     }
 }

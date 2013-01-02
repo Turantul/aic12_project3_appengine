@@ -11,7 +11,7 @@ import aic12.project3.dto.TweetDTO;
 public class GoogleRequestDAO implements IRequestDAO {
 
 
-	private static GoogleRequestDAO instance = new GoogleRequestDAO();
+	public static GoogleRequestDAO instance = new GoogleRequestDAO();
 
 
 	private GoogleRequestDAO(){
