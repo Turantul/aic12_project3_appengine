@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?><web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.5" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee  http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
-  <display-name>
-    Twitter sentiment analysis
-  </display-name>
+  <display-name>Twitter sentiment analysis</display-name>
 
   <!-- ***** Designate client-side state saving. ***** -->
   <context-param>
@@ -39,7 +37,7 @@
     <url-pattern>/faces/*</url-pattern>
     <url-pattern>*.jsf</url-pattern>
   </servlet-mapping>
-  
+
   <servlet>
     <servlet-name>Index Servlet</servlet-name>
     <servlet-class>aic12.project3.webserver.servlet.IndexServlet</servlet-class>
@@ -48,7 +46,15 @@
     <servlet-name>Index Servlet</servlet-name>
     <url-pattern>/tasks/index</url-pattern>
   </servlet-mapping>
-  
+
+  <servlet>
+    <servlet-name>Analysis Servlet</servlet-name>
+    <servlet-class>aic12.project3.webserver.servlet.AnalysisServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Analysis Servlet</servlet-name>
+    <url-pattern>/tasks/analysis</url-pattern>
+  </servlet-mapping>
 
   <!-- ***** Specify session timeout of thirty (30) minutes. ***** -->
   <session-config>
