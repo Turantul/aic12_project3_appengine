@@ -2,9 +2,9 @@ package aic12.project3.webserver.servlet;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -29,6 +29,8 @@ import classifier.WekaClassifier;
 
 public class AnalysisServlet extends HttpServlet
 {
+    private static final Logger log = Logger.getLogger(AnalysisServlet.class.getName()); 
+    
     private WeightedMajority wm;
 
     public AnalysisServlet() throws Exception
@@ -66,9 +68,10 @@ public class AnalysisServlet extends HttpServlet
         {
             // fetchTweets(request.getCompanyName());
 
-            List<TweetDTO> tweets = new GoogleTweetDAO().searchTweet(request.getCompanyName(), new Date(System.currentTimeMillis() - 1000000), new Date());
-
-            System.out.println("processing: " + tweets.size());
+            List<TweetDTO> tweets = new GoogleTweetDAO().searchTweetOffsetLimit(request.getCompanyName(), request.getFrom(), request.getTo(), Integer.parseInt(req.getParameter("offset")), Integer.parseInt(req.getParameter("pagesize")));
+            
+            log.warning("Found " + tweets.size() + " tweets");
+            
             calculateSentiment(proreq, tweets);
 
             resp.setStatus(200);
@@ -83,13 +86,20 @@ public class AnalysisServlet extends HttpServlet
     {
         proreq.setTimestampDataFetched(System.currentTimeMillis());
 
-        int i = 0;
-        for (TweetDTO tweet : list)
+        if (list.size() > 0)
         {
-            i += wm.weightedClassify(tweet.getText()).getPolarity();
+            int i = 0;
+            for (TweetDTO tweet : list)
+            {
+                i += wm.weightedClassify(tweet.getText()).getPolarity();
+            }
+    
+            proreq.setSentiment((float) i / list.size() / 4);
         }
-
-        proreq.setSentiment((float) i / list.size() / 4);
+        else
+        {
+            proreq.setSentiment(0);
+        }
         proreq.setNumberOfTweets(list.size());
 
         proreq.setTimestampAnalyzed(System.currentTimeMillis());
@@ -120,6 +130,7 @@ public class AnalysisServlet extends HttpServlet
                 for (Tweet tweet : result.getTweets())
                 {
                     TweetDTO dto = new TweetDTO();
+                    dto.setTwitterId(Long.toString(tweet.getId()));
                     dto.setText(tweet.getText());
                     dto.setDate(tweet.getCreatedAt());
                     dto.setCompanies(companies);

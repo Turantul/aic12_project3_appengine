@@ -1,0 +1,11 @@
+<queue-entries>
+  <queue>
+    <name>Analysis</name>
+    <rate>10/s</rate>
+    <max-concurrent-requests>20</max-concurrent-requests>
+    <bucket-size>50</bucket-size>
+    <retry-parameters>
+      <task-retry-limit>3</task-retry-limit>
+    </retry-parameters>
+  </queue>
+</queue-entries>

@@ -23,7 +23,6 @@ public class SentimentRequestDTO
 
     private int numberOfParts;
 
-
     public SentimentRequestDTO() { }
     
     public SentimentRequestDTO(String id) {

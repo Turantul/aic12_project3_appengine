@@ -16,8 +16,6 @@ public class SentimentProcessingRequestDTO
     private Long timestampAnalyzed;
     private float sentiment;
     private int numberOfTweets;
-    private int offset;
-    private int pagesize;
 
     public String getId()
     {
@@ -82,25 +80,5 @@ public class SentimentProcessingRequestDTO
     public void setNumberOfTweets(int numberOfTweets)
     {
         this.numberOfTweets = numberOfTweets;
-    }
-
-    public int getOffset()
-    {
-        return offset;
-    }
-
-    public void setOffset(int offset)
-    {
-        this.offset = offset;
-    }
-
-    public int getPagesize()
-    {
-        return pagesize;
-    }
-
-    public void setPagesize(int pagesize)
-    {
-        this.pagesize = pagesize;
     }
 }
