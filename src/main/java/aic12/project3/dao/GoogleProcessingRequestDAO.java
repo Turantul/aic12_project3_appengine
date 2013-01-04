@@ -30,6 +30,12 @@ public class GoogleProcessingRequestDAO implements IProcessingRequestDAO {
     {
         return ofy().load().type(SentimentProcessingRequestDTO.class).filter("parentID", key).list();
     }
+    
+    @Override
+    public int getCountSentimentRequestForRequest(String key)
+    {
+        return ofy().load().type(SentimentProcessingRequestDTO.class).filter("parentID", key).count();
+    }
 
     @Override
     public SentimentProcessingRequestDTO getRequest(String id)

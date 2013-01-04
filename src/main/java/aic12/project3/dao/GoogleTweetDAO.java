@@ -5,12 +5,7 @@ import static aic12.project3.dao.OfyService.ofy;
 import java.util.Date;
 import java.util.List;
 
-import com.google.appengine.api.datastore.Cursor;
-import com.google.appengine.api.datastore.QueryResultIterator;
-import com.googlecode.objectify.cmd.Query;
-
 import aic12.project3.dto.TweetDTO;
-import aic12.project3.dto.UserDTO;
 
 public class GoogleTweetDAO implements ITweetDAO{
 

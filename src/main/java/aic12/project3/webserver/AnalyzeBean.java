@@ -56,13 +56,15 @@ public class AnalyzeBean implements Serializable
     
     public void poll()
     {
-        List<SentimentProcessingRequestDTO> list = GoogleProcessingRequestDAO.instance.getAllSentimentRequestForRequest(key);
-        if (list.size() < parts)
+        int count = GoogleProcessingRequestDAO.instance.getCountSentimentRequestForRequest(key);
+        if (count < parts)
         {
-            result = "Calculating: " + list.size() + "/" + parts;
+            result = "Calculating: " + count + "/" + parts;
         }
         else
         {
+            List<SentimentProcessingRequestDTO> list = GoogleProcessingRequestDAO.instance.getAllSentimentRequestForRequest(key);
+            
             float sentiment = 0;
             int amount = 0;
             for (SentimentProcessingRequestDTO pro : list)

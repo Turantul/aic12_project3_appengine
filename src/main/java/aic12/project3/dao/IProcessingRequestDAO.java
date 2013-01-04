@@ -13,4 +13,6 @@ public interface IProcessingRequestDAO
     List<SentimentProcessingRequestDTO> getAllSentimentProcessingRequest();
 
     List<SentimentProcessingRequestDTO> getAllSentimentRequestForRequest(String key);
+
+    int getCountSentimentRequestForRequest(String key);
 }
