@@ -5,8 +5,6 @@ import java.util.List;
 import aic12.project3.dto.UserDTO;
 import static aic12.project3.dao.OfyService.ofy;
 
-
-
 public class GoogleUserDAO implements IUserDAO{
 
 	

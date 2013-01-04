@@ -9,14 +9,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.googlecode.objectify.Key;
+
 import twitter4j.Query;
 import twitter4j.QueryResult;
 import twitter4j.Tweet;
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
+import aic12.project3.dao.GoogleProcessingRequestDAO;
 import aic12.project3.dao.GoogleRequestDAO;
-import aic12.project3.dto.SentimentProcessingRequest;
-import aic12.project3.dto.SentimentRequest;
+import aic12.project3.dto.SentimentProcessingRequestDTO;
+import aic12.project3.dto.SentimentRequestDTO;
 import classifier.ClassifierBuilder;
 import classifier.IClassifier;
 import classifier.WeightedMajority;
@@ -45,7 +48,17 @@ public class AnalysisServlet extends HttpServlet
 
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
-        SentimentRequest request = GoogleRequestDAO.instance.getRequest(req.getParameter("request"));
+        SentimentRequestDTO request;
+        
+        //Necessary because it sometimes is null
+        do
+        {
+            request = GoogleRequestDAO.instance.getRequest(req.getParameter("request"));
+        } while (request == null);
+        
+        SentimentProcessingRequestDTO proreq = new SentimentProcessingRequestDTO();
+        proreq.setParentID(Key.create(SentimentRequestDTO.class, req.getParameter("request")));
+        proreq.setTimestampStartOfAnalysis(System.currentTimeMillis());
 
         // TODO: query database for tweets
         // so far Twitter4J is used
@@ -57,7 +70,7 @@ public class AnalysisServlet extends HttpServlet
 
             Query query = new Query(request.getCompanyName());
             query.setLang("en");
-            query.setRpp(10);
+            query.setRpp(1);
 
             for (int i = 1; i < 10; i++)
             {
@@ -66,7 +79,7 @@ public class AnalysisServlet extends HttpServlet
                 tweets.addAll(result.getTweets());
             }
 
-            calculateSentiment(request, tweets);
+            calculateSentiment(proreq, tweets);
             
             resp.setStatus(200);
         }
@@ -76,10 +89,8 @@ public class AnalysisServlet extends HttpServlet
         }
     }
 
-    private void calculateSentiment(SentimentRequest request, List<Tweet> list) throws Exception
+    private void calculateSentiment(SentimentProcessingRequestDTO proreq, List<Tweet> list) throws Exception
     {
-        SentimentProcessingRequest proreq = new SentimentProcessingRequest();
-        
         proreq.setTimestampDataFetched(System.currentTimeMillis());
 
         int i = 0;
@@ -93,7 +104,6 @@ public class AnalysisServlet extends HttpServlet
 
         proreq.setTimestampAnalyzed(System.currentTimeMillis());
         
-        request.getSubRequests().add(proreq);
-        GoogleRequestDAO.instance.saveRequest(request);
+        GoogleProcessingRequestDAO.instance.saveRequest(proreq);
     }
 }

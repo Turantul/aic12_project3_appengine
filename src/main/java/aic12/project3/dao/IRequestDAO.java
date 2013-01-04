@@ -2,7 +2,9 @@ package aic12.project3.dao;
 
 import java.util.List;
 
-import aic12.project3.dto.SentimentRequest;
+import com.googlecode.objectify.Key;
+
+import aic12.project3.dto.SentimentRequestDTO;
 
 public interface IRequestDAO
 {
@@ -10,12 +12,13 @@ public interface IRequestDAO
      * Saves a Sentiment Request
      * 
      * @param request SentimentRequest
+     * @return 
      */
-    void saveRequest(SentimentRequest request);
+    Key<SentimentRequestDTO> saveRequest(SentimentRequestDTO request);
 
-    List<SentimentRequest> getAllRequestForCompany(String company);
+    List<SentimentRequestDTO> getAllRequestForCompany(String company);
 
-    SentimentRequest getRequest(String id);
+    SentimentRequestDTO getRequest(String id);
     
-    List<SentimentRequest> getAllRequests();
+    List<SentimentRequestDTO> getAllRequests();
 }

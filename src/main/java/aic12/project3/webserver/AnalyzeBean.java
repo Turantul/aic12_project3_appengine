@@ -3,17 +3,21 @@ package aic12.project3.webserver;
 import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
 
 import java.io.Serializable;
-import java.util.UUID;
+import java.util.Date;
+import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
+import aic12.project3.dao.GoogleProcessingRequestDAO;
 import aic12.project3.dao.GoogleRequestDAO;
-import aic12.project3.dto.SentimentRequest;
+import aic12.project3.dto.SentimentProcessingRequestDTO;
+import aic12.project3.dto.SentimentRequestDTO;
 
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
+import com.googlecode.objectify.Key;
 
 @ManagedBean
 @SessionScoped
@@ -24,23 +28,30 @@ public class AnalyzeBean implements Serializable
 
     public String analyze() throws Exception
     {
-        SentimentRequest request = new SentimentRequest(UUID.randomUUID().toString());
+        SentimentRequestDTO request = new SentimentRequestDTO();
 
         request.setCompanyName(companyName);
-        // TODO: set From and To
+        request.setFrom(new Date());
+        request.setTo(new Date());
+        request.setTimestampRequestSending(System.currentTimeMillis());
+        request.setParts(10);
 
-        GoogleRequestDAO.instance.saveRequest(request);
-        
+        Key<SentimentRequestDTO> key = GoogleRequestDAO.instance.saveRequest(request);
+
         Queue queue = QueueFactory.getDefaultQueue();
 
         for (int i = 0; i < 10; i++)
         {
-            queue.add(withUrl("/tasks/analysis").method(TaskOptions.Method.GET).param("request", request.getId()));
+            queue.add(withUrl("/tasks/analysis").method(TaskOptions.Method.GET).param("request", key.getString()));
         }
         
-        Thread.sleep(20000);
-        
-        request = GoogleRequestDAO.instance.getRequest(request.getId());
+        List<SentimentProcessingRequestDTO> list;
+        do
+        {
+            Thread.sleep(1000);
+            list = GoogleProcessingRequestDAO.instance.getAllSentimentRequestForRequest(key);
+            System.out.println(list.size());
+        } while (list.size() < 10);
 
         // double interval = 1.96 * Math.sqrt(req.getSentiment() * (1 -
         // req.getSentiment()) / (req.getNumberOfTweets() - 1));

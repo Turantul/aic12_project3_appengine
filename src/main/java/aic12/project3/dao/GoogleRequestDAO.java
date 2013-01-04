@@ -4,9 +4,9 @@ import static aic12.project3.dao.OfyService.ofy;
 
 import java.util.List;
 
+import com.googlecode.objectify.Key;
 
-import aic12.project3.dto.SentimentRequest;
-import aic12.project3.dto.TweetDTO;
+import aic12.project3.dto.SentimentRequestDTO;
 
 public class GoogleRequestDAO implements IRequestDAO {
 
@@ -18,23 +18,23 @@ public class GoogleRequestDAO implements IRequestDAO {
 	}
 
 	@Override
-	public void saveRequest(SentimentRequest request) {
-		ofy().save().entity(request).now();
+	public Key<SentimentRequestDTO> saveRequest(SentimentRequestDTO request) {
+		return ofy().save().entity(request).now();
 	}
 
 	@Override
-	public List<SentimentRequest> getAllRequestForCompany(String company) {
-		return ofy().load().type(SentimentRequest.class).filter("companyName =", company).list();
+	public List<SentimentRequestDTO> getAllRequestForCompany(String company) {
+		return ofy().load().type(SentimentRequestDTO.class).filter("companyName =", company).list();
 	}
 
 	@Override
-	public SentimentRequest getRequest(String id) {
-		return ofy().load().type(SentimentRequest.class).filter("id =", id).first().get();
+	public SentimentRequestDTO getRequest(String id) {
+		return ofy().load().type(SentimentRequestDTO.class).filterKey(Key.create(id)).first().get();
 	}
 
     @Override
-    public List<SentimentRequest> getAllRequests()
+    public List<SentimentRequestDTO> getAllRequests()
     {
-    	return ofy().load().type(SentimentRequest.class).list();
+    	return ofy().load().type(SentimentRequestDTO.class).list();
     }
 }

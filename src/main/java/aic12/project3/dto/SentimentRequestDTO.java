@@ -1,17 +1,16 @@
 package aic12.project3.dto;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
+import javax.persistence.Transient;
 
-import com.googlecode.objectify.annotation.Embed;
+import com.googlecode.objectify.Key;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
 
 @Entity
-public class SentimentRequest
+public class SentimentRequestDTO
 {
 	@Id
     private String id;
@@ -21,17 +20,16 @@ public class SentimentRequest
     private Date from;
 	@Index
     private Date to;
-    private int numberOfTweets;
-    private long timestampRequestSending;
+
+	private long timestampRequestSending;
     private long timestampRequestFinished;
-    @Embed
-    private List<SentimentProcessingRequest> subRequests = new ArrayList<SentimentProcessingRequest>();
+
     private int numberOfParts;
 
 
-    public SentimentRequest() { }
+    public SentimentRequestDTO() { }
     
-    public SentimentRequest(String id) {
+    public SentimentRequestDTO(String id) {
     	this.id = id;
 	}
 
@@ -55,7 +53,7 @@ public class SentimentRequest
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		SentimentRequest other = (SentimentRequest) obj;
+		SentimentRequestDTO other = (SentimentRequestDTO) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -119,20 +117,6 @@ public class SentimentRequest
 	public void setTo(Date to) {
 		this.to = to;
 	}
-
-	/**
-	 * @return the numberOfTweets
-	 */
-	public int getNumberOfTweets() {
-		return numberOfTweets;
-	}
-
-	/**
-	 * @param numberOfTweets the numberOfTweets to set
-	 */
-	public void setNumberOfTweets(int numberOfTweets) {
-		this.numberOfTweets = numberOfTweets;
-	}
 	
 	public long getTimestampRequestSending() {
 		return timestampRequestSending;
@@ -150,20 +134,6 @@ public class SentimentRequest
 		this.timestampRequestFinished = timestampRequestFinished;
 	}
 
-	/**
-	 * @return the subRequests
-	 */
-	public List<SentimentProcessingRequest> getSubRequests() {
-		return subRequests;
-	}
-
-	/**
-	 * @param subRequests the subRequests to set
-	 */
-	public void setSubRequests(List<SentimentProcessingRequest> subRequests) {
-		this.subRequests = subRequests;
-	}
-	
 	public void setParts(int i){
 		this.numberOfParts = i;
 	}
@@ -171,6 +141,4 @@ public class SentimentRequest
 	public int getParts(){
 		return this.numberOfParts;
 	}
-
-
 }
