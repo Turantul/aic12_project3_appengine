@@ -3,7 +3,8 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html">
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
 
 <h:head>
 	<title>Twitter Sentiment Analysis - Result</title>
@@ -11,6 +12,9 @@
 <h:body>
 	The result is:
 	<br />
-	#{analyzeBean.result}
+	<h:form id="form">
+		<h:outputText id="txt" value="#{analyzeBean.result}" />
+		<p:poll interval="3" listener="#{analyzeBean.poll}" update="txt" />
+	</h:form>
 </h:body>
 </html>

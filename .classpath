@@ -18,5 +18,6 @@
 	<classpathentry kind="lib" path="testing/appengine-api-labs.jar"/>
 	<classpathentry kind="lib" path="testing/appengine-api-stubs.jar"/>
 	<classpathentry kind="lib" path="testing/appengine-testing.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/primefaces-3.4.2.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
