@@ -48,18 +48,24 @@ public class AnalyzeBean implements Serializable
         List<SentimentProcessingRequestDTO> list;
         do
         {
-            Thread.sleep(1000);
-            list = GoogleProcessingRequestDAO.instance.getAllSentimentRequestForRequest(key);
+            Thread.sleep(5000);
+            list = GoogleProcessingRequestDAO.instance.getAllSentimentRequestForRequest(key.getString());
             System.out.println(list.size());
         } while (list.size() < 10);
+        
+        float sentiment = 0;
+        int amount = 0;
+        for (SentimentProcessingRequestDTO pro : list)
+        {
+            amount += pro.getNumberOfTweets();
+            sentiment += pro.getSentiment() * pro.getNumberOfTweets();
+        }
+        
+        sentiment /= amount;
 
-        // double interval = 1.96 * Math.sqrt(req.getSentiment() * (1 -
-        // req.getSentiment()) / (req.getNumberOfTweets() - 1));
-        //
-        // result = "Amount: " + req.getNumberOfTweets() + " - Sentiment: (" +
-        // (req.getSentiment() - interval) + " < " + req.getSentiment() + " < "
-        // + (req.getSentiment() + interval)
-        // + ")";
+        double interval = 1.96 * Math.sqrt(sentiment * (1 - sentiment) / (amount - 1));
+        
+        result = "Amount: " + amount + " - Sentiment: (" + (sentiment - interval) + " < " + sentiment + " < " + (sentiment + interval) + ")";
         return "result.xhtml";
     }
 

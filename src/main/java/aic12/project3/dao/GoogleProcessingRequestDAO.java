@@ -4,10 +4,7 @@ import static aic12.project3.dao.OfyService.ofy;
 
 import java.util.List;
 
-import com.googlecode.objectify.Key;
-
 import aic12.project3.dto.SentimentProcessingRequestDTO;
-import aic12.project3.dto.SentimentRequestDTO;
 
 public class GoogleProcessingRequestDAO implements IProcessingRequestDAO {
 
@@ -29,9 +26,9 @@ public class GoogleProcessingRequestDAO implements IProcessingRequestDAO {
     }
 
     @Override
-    public List<SentimentProcessingRequestDTO> getAllSentimentRequestForRequest(Key<SentimentRequestDTO> key)
+    public List<SentimentProcessingRequestDTO> getAllSentimentRequestForRequest(String key)
     {
-        return ofy().load().type(SentimentProcessingRequestDTO.class).filter("ParentID", key).list();
+        return ofy().load().type(SentimentProcessingRequestDTO.class).filter("parentID", key).list();
     }
 
     @Override

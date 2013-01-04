@@ -57,7 +57,7 @@ public class AnalysisServlet extends HttpServlet
         } while (request == null);
         
         SentimentProcessingRequestDTO proreq = new SentimentProcessingRequestDTO();
-        proreq.setParentID(Key.create(SentimentRequestDTO.class, req.getParameter("request")));
+        proreq.setParentID(req.getParameter("request"));
         proreq.setTimestampStartOfAnalysis(System.currentTimeMillis());
 
         // TODO: query database for tweets
@@ -70,7 +70,7 @@ public class AnalysisServlet extends HttpServlet
 
             Query query = new Query(request.getCompanyName());
             query.setLang("en");
-            query.setRpp(1);
+            query.setRpp(10);
 
             for (int i = 1; i < 10; i++)
             {

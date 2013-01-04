@@ -2,9 +2,6 @@ package aic12.project3.dto;
 
 import java.util.Date;
 
-import javax.persistence.Transient;
-
-import com.googlecode.objectify.Key;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;

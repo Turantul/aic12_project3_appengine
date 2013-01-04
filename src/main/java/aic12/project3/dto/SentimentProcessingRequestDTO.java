@@ -1,19 +1,16 @@
 package aic12.project3.dto;
 
-import java.util.UUID;
-
-import com.googlecode.objectify.Key;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
-import com.googlecode.objectify.annotation.Parent;
+import com.googlecode.objectify.annotation.Index;
 
 @Entity
 public class SentimentProcessingRequestDTO
 {
     @Id
     private String id;
-    @Parent
-    private Key<SentimentRequestDTO> parentID;
+    @Index
+    private String parentID;
     private Long timestampStartOfAnalysis;
     private Long timestampDataFetched;
     private Long timestampAnalyzed;
@@ -22,22 +19,17 @@ public class SentimentProcessingRequestDTO
     private int offset;
     private int pagesize;
 
-    public SentimentProcessingRequestDTO()
-    {
-        this.id = UUID.randomUUID().toString();
-    }
-
     public String getId()
     {
         return this.id;
     }
 
-    public Key<SentimentRequestDTO> getParentID()
+    public String getParentID()
     {
         return parentID;
     }
 
-    public void setParentID(Key<SentimentRequestDTO> parentID)
+    public void setParentID(String parentID)
     {
         this.parentID = parentID;
     }
