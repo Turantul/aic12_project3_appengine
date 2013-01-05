@@ -9,8 +9,7 @@ import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-
-import org.primefaces.context.RequestContext;
+import javax.faces.context.FacesContext;
 
 import twitter4j.Query;
 import twitter4j.QueryResult;
@@ -35,7 +34,6 @@ import com.googlecode.objectify.Key;
 public class AnalyzeBean implements Serializable
 {
     private String companyName;
-    private String result;
     private int parts;
     private String key;
     
@@ -43,6 +41,8 @@ public class AnalyzeBean implements Serializable
 
     public String analyze() throws Exception
     {
+        FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+        
         SentimentRequestDTO request = new SentimentRequestDTO();
 
         request.setCompanyName(companyName);
@@ -52,11 +52,13 @@ public class AnalyzeBean implements Serializable
         
         Long amount = new GoogleTweetDAO().countTweet(request.getCompanyName(), request.getFrom(), request.getTo());
         
-        if (amount < 10000)
+        /*if (amount < 10000)
         {
             fetchTweets(companyName);
+            Thread.sleep(1000);
+            
             amount = new GoogleTweetDAO().countTweet(request.getCompanyName(), request.getFrom(), request.getTo());
-        }
+        }*/
         
         parts = (int) Math.ceil(amount / pagesize) + 1;
         
@@ -66,16 +68,25 @@ public class AnalyzeBean implements Serializable
         this.key = key.getString();
 
         Queue queue = QueueFactory.getQueue("Analysis");
-        for (int i = 0; i <= parts; i++)
+        for (int i = 0; i < parts; i++)
         {
             queue.add(withUrl("/tasks/analysis").method(TaskOptions.Method.GET).param("request", key.getString()).param("offset", Integer.toString((i) * pagesize)).param("pagesize", Integer.toString(pagesize)));
         }
+        
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("key", this.key);
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("amount", amount);
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("parts", parts);
         
         return "result.xhtml";
     }
     
     public void poll()
     {
+        int parts = Integer.parseInt(FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("parts").toString());
+        String key = FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("key").toString();
+        
+        String result;
+        
         int count = GoogleProcessingRequestDAO.instance.getCountSentimentRequestForRequest(key);
         if (count < parts)
         {
@@ -84,7 +95,7 @@ public class AnalyzeBean implements Serializable
         else
         {
             List<SentimentProcessingRequestDTO> list = GoogleProcessingRequestDAO.instance.getAllSentimentRequestForRequest(key);
-            
+
             float sentiment = 0;
             int amount = 0;
             for (SentimentProcessingRequestDTO pro : list)
@@ -92,17 +103,15 @@ public class AnalyzeBean implements Serializable
                 amount += pro.getNumberOfTweets();
                 sentiment += pro.getSentiment() * pro.getNumberOfTweets();
             }
-            
+
             sentiment /= amount;
-    
+
             double interval = 1.96 * Math.sqrt(sentiment * (1 - sentiment) / (amount - 1));
-            
+
             result = "Amount: " + amount + " - Sentiment: (" + (sentiment - interval) + " < " + sentiment + " < " + (sentiment + interval) + ")";
-            
-            RequestContext reqCtx = RequestContext.getCurrentInstance();
-            reqCtx.execute("poll.stop();");
         }
-        result += "/Parts: " + parts + " Count: " + count;
+
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("result", result);
     }
 
     public String getCompanyName()
@@ -114,12 +123,8 @@ public class AnalyzeBean implements Serializable
     {
         this.companyName = companyName;
     }
-
-    public String getResult()
-    {
-        return result;
-    }
     
+    @SuppressWarnings("unused")
     private void fetchTweets(String company) throws TwitterException
     {
         Twitter twitter = new TwitterFactory().getInstance();
@@ -149,5 +154,25 @@ public class AnalyzeBean implements Serializable
         }
 
         new GoogleTweetDAO().storeTweet(tweets);
+    }
+
+    public int getParts()
+    {
+        return parts;
+    }
+
+    public void setParts(int parts)
+    {
+        this.parts = parts;
+    }
+
+    public String getKey()
+    {
+        return key;
+    }
+
+    public void setKey(String key)
+    {
+        this.key = key;
     }
 }

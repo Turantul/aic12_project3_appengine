@@ -3,18 +3,18 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui">
+	xmlns:h="http://java.sun.com/jsf/html">
 
 <h:head>
 	<title>Twitter Sentiment Analysis - Result</title>
 </h:head>
 <h:body>
-	The result is:
+	Found <h:outputText value="#{amount}" /> tweets. Splitting work into <h:outputText value="#{parts}" /> tasks. Please poll for results.
 	<br />
 	<h:form id="form">
-		<h:outputText id="txt" value="#{analyzeBean.result}" />
-		<p:poll interval="5" listener="#{analyzeBean.poll}" update="txt" />
+		<h:outputText value="#{result}" />
+		<br />
+		<h:commandButton value="Poll" action="#{analyzeBean.poll}"></h:commandButton>
 	</h:form>
 </h:body>
 </html>

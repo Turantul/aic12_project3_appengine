@@ -29,7 +29,7 @@ import classifier.WekaClassifier;
 
 public class AnalysisServlet extends HttpServlet
 {
-    private static final Logger log = Logger.getLogger(AnalysisServlet.class.getName()); 
+    private static final Logger log = Logger.getLogger(AnalysisServlet.class.getName());
     
     private WeightedMajority wm;
 

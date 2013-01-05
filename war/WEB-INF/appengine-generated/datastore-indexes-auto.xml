@@ -1,8 +1,8 @@
-<!-- Indices written at Fri, 4 Jan 2013 16:15:46 UTC -->
+<!-- Indices written at Sat, 5 Jan 2013 10:37:12 UTC -->
 
 <datastore-indexes>
 
-    <!-- Used 2 times in query history -->
+    <!-- Used 3 times in query history -->
     <datastore-index kind="TweetDTO" ancestor="false" source="auto">
         <property name="companies" direction="asc"/>
         <property name="date" direction="asc"/>
