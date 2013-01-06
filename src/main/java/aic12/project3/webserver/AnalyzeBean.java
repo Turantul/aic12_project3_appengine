@@ -37,7 +37,9 @@ public class AnalyzeBean implements Serializable
     private int parts;
     private String key;
     
-    public static int pagesize = 1000;
+    // Product should be 1000
+    public static int pagesize = 10;
+    private static int multiplicator = 100;
 
     public String analyze() throws Exception
     {
@@ -50,7 +52,7 @@ public class AnalyzeBean implements Serializable
         request.setTo(new Date());
         request.setTimestampRequestSending(System.currentTimeMillis());
         
-        Long amount = new GoogleTweetDAO().countTweet(request.getCompanyName(), request.getFrom(), request.getTo());
+        long amount = (long) ((Math.ceil(new GoogleTweetDAO().countTweet(request.getCompanyName(), request.getFrom(), request.getTo()) / multiplicator) + 1) * multiplicator);
         
         /*if (amount < 10000)
         {
@@ -60,7 +62,7 @@ public class AnalyzeBean implements Serializable
             amount = new GoogleTweetDAO().countTweet(request.getCompanyName(), request.getFrom(), request.getTo());
         }*/
         
-        parts = (int) Math.ceil(amount / pagesize) + 1;
+        parts = (int) Math.ceil((float) amount / pagesize / multiplicator);
         
         request.setParts(parts);
 
@@ -70,7 +72,7 @@ public class AnalyzeBean implements Serializable
         Queue queue = QueueFactory.getQueue("Analysis");
         for (int i = 0; i < parts; i++)
         {
-            queue.add(withUrl("/tasks/analysis").method(TaskOptions.Method.GET).param("request", key.getString()).param("offset", Integer.toString((i) * pagesize)).param("pagesize", Integer.toString(pagesize)));
+            queue.add(withUrl("/tasks/analysis").method(TaskOptions.Method.GET).param("request", key.getString()).param("offset", Integer.toString((i) * pagesize * multiplicator)).param("pagesize", Integer.toString(pagesize)).param("multiplicator", Integer.toString(multiplicator)));
         }
         
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("key", this.key);
@@ -96,8 +98,8 @@ public class AnalyzeBean implements Serializable
         {
             List<SentimentProcessingRequestDTO> list = GoogleProcessingRequestDAO.instance.getAllSentimentRequestForRequest(key);
 
-            float sentiment = 0;
-            int amount = 0;
+            double sentiment = 0;
+            long amount = 0;
             for (SentimentProcessingRequestDTO pro : list)
             {
                 amount += pro.getNumberOfTweets();

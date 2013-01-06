@@ -14,8 +14,8 @@ public class SentimentProcessingRequestDTO
     private Long timestampStartOfAnalysis;
     private Long timestampDataFetched;
     private Long timestampAnalyzed;
-    private float sentiment;
-    private int numberOfTweets;
+    private double sentiment;
+    private long numberOfTweets;
 
     public String getId()
     {
@@ -62,22 +62,22 @@ public class SentimentProcessingRequestDTO
         this.timestampAnalyzed = timestampAnalyzed;
     }
 
-    public float getSentiment()
+    public double getSentiment()
     {
         return sentiment;
     }
 
-    public void setSentiment(float sentiment)
+    public void setSentiment(double d)
     {
-        this.sentiment = sentiment;
+        this.sentiment = d;
     }
 
-    public int getNumberOfTweets()
+    public long getNumberOfTweets()
     {
         return numberOfTweets;
     }
 
-    public void setNumberOfTweets(int numberOfTweets)
+    public void setNumberOfTweets(long numberOfTweets)
     {
         this.numberOfTweets = numberOfTweets;
     }

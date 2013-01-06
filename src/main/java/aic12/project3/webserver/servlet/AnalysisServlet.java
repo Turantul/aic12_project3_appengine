@@ -72,7 +72,7 @@ public class AnalysisServlet extends HttpServlet
             
             log.warning("Found " + tweets.size() + " tweets");
             
-            calculateSentiment(proreq, tweets);
+            calculateSentiment(proreq, tweets, Integer.parseInt(req.getParameter("multiplicator")));
 
             resp.setStatus(200);
         }
@@ -82,25 +82,28 @@ public class AnalysisServlet extends HttpServlet
         }
     }
 
-    private void calculateSentiment(SentimentProcessingRequestDTO proreq, List<TweetDTO> list) throws Exception
+    private void calculateSentiment(SentimentProcessingRequestDTO proreq, List<TweetDTO> list, int multiplicator) throws Exception
     {
         proreq.setTimestampDataFetched(System.currentTimeMillis());
 
         if (list.size() > 0)
         {
-            int i = 0;
+            double i = 0;
             for (TweetDTO tweet : list)
             {
-                i += wm.weightedClassify(tweet.getText()).getPolarity();
+                for (int j = 0; j < multiplicator; j++)
+                {
+                    i += wm.weightedClassify(tweet.getText()).getPolarity();
+                }
             }
     
-            proreq.setSentiment((float) i / list.size() / 4);
+            proreq.setSentiment(i / list.size() / multiplicator / 4);
         }
         else
         {
             proreq.setSentiment(0);
         }
-        proreq.setNumberOfTweets(list.size());
+        proreq.setNumberOfTweets(list.size() * multiplicator);
 
         proreq.setTimestampAnalyzed(System.currentTimeMillis());
 
