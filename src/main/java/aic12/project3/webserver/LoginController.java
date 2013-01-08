@@ -1,198 +1,104 @@
 package aic12.project3.webserver;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
-import com.googlecode.objectify.Key;
-
 import aic12.project3.dao.GoogleProcessingRequestDAO;
 import aic12.project3.dao.GoogleRequestDAO;
 import aic12.project3.dto.SentimentProcessingRequestDTO;
 import aic12.project3.dto.SentimentRequestDTO;
-import aic12.project3.dto.SentimentRequestStats;
-import aic12.project3.dto.StatisticsBean;
 
 @ManagedBean
 @SessionScoped
-public class LoginController implements Serializable {
-  	
-	//private static Logger myLogger = Logger.getLogger("JULI"); //import java.util.logging.Logger;
-	
-	private String name;
-	private String registered = "false";
-	private String  helloMessage = "none yet";
-	
-	private List<SentimentRequestStats> requestStats = new ArrayList<SentimentRequestStats>();
+public class LoginController implements Serializable
+{
+    private String name;
 
-	private StatisticsBean statistics;
-	
-	public String loginAction(){
-    	
-		/*
-		 * send request to requestService if company already reqistered
-		 */
-		List<SentimentRequestDTO> response = GoogleRequestDAO.instance.getAllRequestForCompany(this.name);
-		
-		/*
-		 * if company not yet registered
-		 */
-		if(response.size() == 0){
-			this.setRegistered("false");
-			
-		} 
-		/*
-		 * if company already registered
-		*/ 
-		else {
-					
-		System.out.println("USER: " + this.name + " - getting requests.");
-		/*
-		 * get this company's past sentiment analysis results
-		 */
-		//transformRequest(response);
-		System.out.println("USER: " + this.name + " - requests obtained.");
-			
-		this.setRegistered("true");
-		
-		}
-		
-		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("companyName", name);
-        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("requestStats", requestStats);
-		
-		return "request.xhtml";
-		
-//		/*
-//		 * TESTING
-//		 */
-//		  if(this.name.equals("jana")){
-//		/*
-//		 * Test
-//		 */
-//		SentimentRequestList userRequests = mockUserRequests();
-//		/*
-//		 * End test
-//		 */
-//			  transformRequest(userRequests);
-//			  this.setRegistered("true");
-//			
-//		}else{
-//			this.setRegistered("false");
-//			
-//		}
-//		
-//		return "login";
-//		/*
-//		 * END TESTING
-//		 */
-	}
-	
-	private void transformRequest(List<SentimentRequestDTO> userRequests){
-					
-		double sumSentiment = 0;
-		long finalNumberOfTweets = 0;
-		int numberOfSubrequests = 0;
+    public String loginAction()
+    {
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("companyName", name);
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("result", "");
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("averageDurationPerRequest", "");
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("minimumDurationOfRequest", "");
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("maximumDurationOfRequest", "");
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("averageProcessingDurationPerTweet", "");
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("averageTotalDurationPerTweet", "");
 
-		/*
-		 * calculating request details
-		 */
-		for (SentimentRequestDTO userRequest : userRequests) {
-			List<SentimentProcessingRequestDTO> list = GoogleProcessingRequestDAO.instance.getAllSentimentRequestForRequest(Key.create(SentimentRequestDTO.class, userRequest.getId()).getString());
-			numberOfSubrequests = list.size();
-			SentimentRequestStats stats = new SentimentRequestStats();
-			stats.setFrom(userRequest.getFrom());
-			stats.setTo(userRequest.getTo());
-			
-			sumSentiment = 0;
-			finalNumberOfTweets = 0;
-			
-			for (SentimentProcessingRequestDTO subrequest : list) {
+        return "request.xhtml";
+    }
+    
+    public String getAnalysisStatistics()
+    {
+        calculate(FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("companyName").toString());
+        
+        return "statistics.xhtml";
+    }
+    
+    private void calculate(String companyName)
+    {
+        long totalTime = 0;
+        long totalProcessingTime = 0;
+        long totalTotalTime = 0;
+        int count = 0;
+        int amount = 0;
+        
+        long maximumDurationOfRequest = -1;
+        long minimumDurationOfRequest = -1;
+        
+        List<SentimentRequestDTO> list = GoogleRequestDAO.instance.getAllRequestForCompany(companyName);
+        
+        if (list != null && list.size() > 0)
+        {
+            for (SentimentRequestDTO request : list)
+            {
+                long requestDuration = request.getTimestampRequestFinished() - request.getTimestampRequestSending();
+                
+                if (requestDuration > 0)
+                {
+                    amount++;
+                    totalTime += requestDuration;
+                    
+                    if (requestDuration > maximumDurationOfRequest)
+                    {
+                        maximumDurationOfRequest = requestDuration;
+                    }
+                    if (requestDuration < minimumDurationOfRequest || minimumDurationOfRequest == -1)
+                    {
+                        minimumDurationOfRequest = requestDuration;
+                    }
+                    
+                    List<SentimentProcessingRequestDTO> list2 = GoogleProcessingRequestDAO.instance.getAllSentimentRequestForRequest(request.getId());
+    
+                    for (SentimentProcessingRequestDTO procrequest : list2)
+                    {
+                        totalProcessingTime += procrequest.getTimestampAnalyzed() - procrequest.getTimestampDataFetched();
+                        totalTotalTime += procrequest.getTimestampAnalyzed() - procrequest.getTimestampStartOfAnalysis();
+                        count += procrequest.getNumberOfTweets();
+                    }
+                    
+                    totalTotalTime += requestDuration - request.getTimestampRequestFinished() + request.getTimestampRequestSending();
+                }
+            }
+        }
+        
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("averageDurationPerRequest", amount == 0 ? -1 : totalTime / amount);
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("minimumDurationOfRequest", minimumDurationOfRequest);
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("maximumDurationOfRequest", maximumDurationOfRequest);
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("averageProcessingDurationPerTweet", count == 0 ? -1 : totalProcessingTime / count);
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("averageTotalDurationPerTweet", count == 0 ? -1 : totalTotalTime / count);
+    }
 
-				sumSentiment += subrequest.getSentiment();
-				finalNumberOfTweets += subrequest.getNumberOfTweets();
-				
-			}
-			
-			
-			double finalSentiment = sumSentiment / numberOfSubrequests;
+    public String getName()
+    {
+        return name;
+    }
 
-			double standardError = 1.96 * Math.sqrt(finalSentiment
-					* (1 - finalSentiment) / (finalNumberOfTweets - 1));
-			
-			stats.setSentiment(finalSentiment);
-			stats.setTweets(finalNumberOfTweets);
-			stats.setIntervalMin(finalSentiment - standardError);
-			stats.setIntervalMax(finalSentiment + standardError);
-			
-			
-			requestStats.add(stats);
-		}
-
-	}
-	
-	public String getAnalysisStatistics() {
-
-		// TODO calculate
-
-//		/*
-//		 * TEST
-//		 */
-//		 StatisticsBean test = new StatisticsBean();
-//		 test.setAverageDurationPerRequest(4464);
-//		 test.setAverageProcessingDurationPerTweet(4464);
-//		 test.setAverageTotalDurationPerTweet(4);
-//		 test.setMaximumDurationOfRequest(545646);
-//		 test.setMinimumDurationOfRequest(98789749); this.statistics=test;
-//		 /*
-//		  * END TEST
-//		  */
-
-		return "statistics";
-	}
-
-
-	public String getName() {
-		return name;
-	}
- 
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	public List<SentimentRequestStats> getRequestStats() {
-		return requestStats;
-	}
-
-	public void setRequestStats(List<SentimentRequestStats> requestStats) {
-		this.requestStats = requestStats;
-	}
-	
-	public String getHelloMessage() {
-		return helloMessage;
-	}
-
-	public void setHelloMessage(String helloMessage) {
-		this.helloMessage = helloMessage;
-	}
-
-	public String getRegistered() {
-		return registered;
-	}
-
-	public void setRegistered(String registered) {
-		this.registered = registered;
-	}
-
-	public StatisticsBean getStatistics() {
-		return statistics;
-	}
-
-	public void setStatistics(StatisticsBean statistics) {
-		this.statistics = statistics;
-	}
-
+    public void setName(String name)
+    {
+        this.name = name;
+    }
 }

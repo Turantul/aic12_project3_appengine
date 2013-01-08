@@ -69,7 +69,7 @@ public class AnalysisServlet extends HttpServlet
             // fetchTweets(request.getCompanyName());
 
             List<TweetDTO> tweets = new GoogleTweetDAO().searchTweetOffsetLimit(request.getCompanyName(), request.getFrom(), request.getTo(), Integer.parseInt(req.getParameter("offset")), Integer.parseInt(req.getParameter("pagesize")));
-            
+
             log.warning("Found " + tweets.size() + " tweets");
             
             calculateSentiment(proreq, tweets, Integer.parseInt(req.getParameter("multiplicator")));

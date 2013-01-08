@@ -24,12 +24,12 @@ public class GoogleRequestDAO implements IRequestDAO {
 
 	@Override
 	public List<SentimentRequestDTO> getAllRequestForCompany(String company) {
-		return ofy().load().type(SentimentRequestDTO.class).filter("companyName =", company).list();
+		return ofy().load().type(SentimentRequestDTO.class).filter("companyName", company).list();
 	}
 
 	@Override
 	public SentimentRequestDTO getRequest(String id) {
-		return ofy().load().type(SentimentRequestDTO.class).filterKey(Key.create(id)).first().get();
+		return ofy().load().type(SentimentRequestDTO.class).filter("id", id).first().get();
 	}
 
     @Override
