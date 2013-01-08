@@ -59,9 +59,9 @@ public class RequestController implements Serializable
 
         long amount = (long) ((Math.ceil(new GoogleTweetDAO().countTweet(request.getCompanyName(), request.getFrom(), request.getTo()) / multiplicator) + 1) * multiplicator);
 
-        if (amount < 10000)
+        /*if (amount < 10000)
         {
-            /*try
+            try
             {
                 fetchTweets(companyName);
                 Thread.sleep(1000);
@@ -69,10 +69,10 @@ public class RequestController implements Serializable
             catch (TwitterException e)
             {}
             catch (InterruptedException e)
-            {}*/
+            {}
 
             amount = (long) ((Math.ceil(new GoogleTweetDAO().countTweet(request.getCompanyName(), request.getFrom(), request.getTo()) / multiplicator) + 1) * multiplicator);
-        }
+        }*/
 
         parts = (int) Math.ceil((float) amount / multiplicator);
 
@@ -89,6 +89,7 @@ public class RequestController implements Serializable
 
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("key", key);
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("parts", parts);
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("amount", amount);
 
         String result = "Found " + amount + " tweets. Splitting work into " + parts + " tasks. Please poll for results.";
 
@@ -123,7 +124,7 @@ public class RequestController implements Serializable
 
             double interval = 1.96 * Math.sqrt(sentiment * (1 - sentiment) / (amount - 1));
 
-            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("numberOfTweets", amount);
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("numberOfTweets", FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("amount"));
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("minimumSentiment", sentiment - interval);
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("maximumSentiment", sentiment + interval);
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("sentiment", sentiment);
