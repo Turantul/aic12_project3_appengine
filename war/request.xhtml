@@ -56,8 +56,6 @@
 				</span>
 				<div id="clearLeft"></div>
 
-
-
 				<span style="visibility: hidden"> <f:ajax event="mouseout"
 						render="calFrom" /> <f:ajax event="mouseout" render="calTo" /> <h:outputText
 						id="calFrom" value="#{requestController.from}" /> <h:outputText
@@ -68,36 +66,28 @@
 					<h:commandButton id="analysis" value="Start analysis"
 						action="#{requestController.sendToAnalysis}">
 					</h:commandButton>
-					<h:commandButton id="poll" value="Poll for result"
-						action="#{requestController.getResponseFromDB}">
-					</h:commandButton>
-
-					<br />
-					<!-- LOGGING OUTPUT -->
-					<h:inputTextarea id="logging" value="#{result}" cols="80" rows="10"
-						onmousemove="var textarea = document.getElementById('form:logging'); textarea.scrollTop = textarea.scrollHeight;" />
-
+					
 					<div id="scrollableTable">
-						<br />
-						<h:panelGrid id="lastRequest" columns="4" border="1"
-							cellpadding="0" cellspacing="2">
+                        <br />
+                        <h:panelGrid id="lastRequest" columns="4" border="1"
+                            cellpadding="0" cellspacing="2">
 
-							<f:facet name="header">
-								<h:outputText id="title" value="RESULT OF YOUR LAST REQUEST" />
-							</f:facet>
+                            <f:facet name="header">
+                                <h:outputText id="title" value="RESULT OF YOUR LAST REQUEST" />
+                            </f:facet>
 
-							<h:outputText value="Number of Tweets" />
-							<h:outputText value="Minimum" />
-							<h:outputText value="Maximum" />
-							<h:outputText value="Sentiment" />
+                            <h:outputText value="Number of Tweets" />
+                            <h:outputText value="Minimum" />
+                            <h:outputText value="Maximum" />
+                            <h:outputText value="Sentiment" />
 
-							<h:outputText value="#{numberOfTweets}" />
-							<h:outputText value="#{minimumSentiment}" />
-							<h:outputText value="#{maximumSentiment}" />
-							<h:outputText value="#{sentiment}" style="font-weight:bold" />
+                            <h:outputText value="#{numberOfTweets}" />
+                            <h:outputText value="#{minimumSentiment}" />
+                            <h:outputText value="#{maximumSentiment}" />
+                            <h:outputText value="#{sentiment}" style="font-weight:bold" />
 
-						</h:panelGrid>
-					</div>
+                        </h:panelGrid>
+                    </div>
 				</div>
 
 			</h:form>

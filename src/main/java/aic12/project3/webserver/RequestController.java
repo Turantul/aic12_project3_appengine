@@ -43,7 +43,7 @@ public class RequestController implements Serializable
     public static int pagesize = 10;
     private static int multiplicator = 100;
 
-    public void sendToAnalysis()
+    public String sendToAnalysis()
     {
         companyName = FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("companyName").toString();
 
@@ -94,6 +94,8 @@ public class RequestController implements Serializable
         String result = "Found " + amount + " tweets. Splitting work into " + parts + " tasks. Please poll for results.";
 
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("result", result);
+        
+        return "requestproc.xhtml";
     }
 
     public void getResponseFromDB()
