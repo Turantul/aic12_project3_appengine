@@ -20,9 +20,8 @@ public class IndexServlet extends HttpServlet{
 		List<TweetDTO> tList= dao.getAllTweetsOffsetLimit(Integer.parseInt(req.getParameter("offset")), Integer.parseInt(req.getParameter("pagesize")));
 		for(TweetDTO t : tList){
 			if(t.getText().contains(company)){
-				List<String> cList = t.getCompanies();
+				String cList = t.getCompanies();
 				if(!cList.contains(company)){
-					cList.add(company);
 					t.setCompanies(cList);
 					dao.storeTweet(t);
 				}

@@ -121,9 +121,6 @@ public class AnalysisServlet extends HttpServlet
 
         try
         {
-            List<String> companies = new ArrayList<String>(1);
-            companies.add(company);
-            
             List<TweetDTO> tweets = new ArrayList<TweetDTO>();
             
             for (int i = 1; i < 10; i++)
@@ -136,7 +133,7 @@ public class AnalysisServlet extends HttpServlet
                     dto.setTwitterId(Long.toString(tweet.getId()));
                     dto.setText(tweet.getText());
                     dto.setDate(tweet.getCreatedAt());
-                    dto.setCompanies(companies);
+                    dto.setCompanies(company);
                     tweets.add(dto);
                 }
             }

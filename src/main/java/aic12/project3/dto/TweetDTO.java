@@ -1,8 +1,6 @@
 package aic12.project3.dto;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
@@ -17,7 +15,7 @@ public class TweetDTO
     @Index
     private Date date;
     @Index
-    private List<String> companies = new ArrayList<String>();
+    private String companies;
     
     public TweetDTO() {}
     
@@ -58,17 +56,11 @@ public class TweetDTO
         this.date = date;
     }
 	
-	public List<String> getCompanies() {
+	public String getCompanies() {
 		return companies;
 	}
 
-	public void setCompanies(List<String> companies) {
+	public void setCompanies(String companies) {
 		this.companies = companies;
 	}
-
-	@Override
-	public String toString(){
-		return "TweetDTO[tweetId="+twitterId+", date="+date+", companies="+companies+"]";
-	}
-    
 }

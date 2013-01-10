@@ -21,12 +21,12 @@ public class GoogleTweetDAO implements ITweetDAO{
 
 	@Override
 	public List<TweetDTO> searchTweet(String company, Date fromDate, Date toDate) {
-		return ofy().load().type(TweetDTO.class).filter("date >=", fromDate).filter("date <=", toDate).filter("companies =", company).list();
+		return ofy().load().type(TweetDTO.class).filter("date >=", fromDate).filter("date <=", toDate).filter("companies", company).list();
 	}
 
 	@Override
 	public Long countTweet(String company, Date fromDate, Date toDate) {
-		return new Long(ofy().load().type(TweetDTO.class).filter("date >=", fromDate).filter("date <=", toDate).filter("companies =", company).count());
+		return new Long(ofy().load().type(TweetDTO.class).filter("date >=", fromDate).filter("date <=", toDate).filter("companies", company).count());
 		
 	}
 	
@@ -42,7 +42,7 @@ public class GoogleTweetDAO implements ITweetDAO{
 	
 	//Use for sentiment analysis
 	public List<TweetDTO> searchTweetOffsetLimit(String company, Date fromDate, Date toDate, int offset, int pagesize) {
-		return ofy().load().type(TweetDTO.class).filter("date >=", fromDate).filter("date <=", toDate).filter("companies =", company).offset(offset).limit(pagesize).list();
+		return ofy().load().type(TweetDTO.class).filter("date >=", fromDate).filter("date <=", toDate).filter("companies", company).offset(offset).limit(pagesize).list();
 	}
 
 	@Override
