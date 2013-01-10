@@ -20,6 +20,8 @@ public class LoginController implements Serializable
 
     public String loginAction()
     {
+        FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+        
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("companyName", name);
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("result", "");
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("averageDurationPerRequest", "");
