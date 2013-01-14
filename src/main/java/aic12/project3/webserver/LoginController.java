@@ -35,7 +35,7 @@ public class LoginController implements Serializable
     
     public String getAnalysisStatistics()
     {
-        calculate(FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("companyName").toString());
+        calculate("[ \"" + FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("companyName").toString() + "\" ]");
         
         return "statistics.xhtml";
     }
